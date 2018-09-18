@@ -42,7 +42,10 @@ class Users extends Controller {
       }
 
       if(empty($data['name_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])) {
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
         if($this->userModel->register($data)) {
+          flash('register_success', 'You are registered');
           redirect('users/login');
         }
       } else {
@@ -83,8 +86,20 @@ class Users extends Controller {
         $data['password_err'] = 'Password must be at least 6 characters';
       }
 
+      if($this->userModel->findUserByEmail($data['email'])) {
+
+      } else {
+        $data['email_err'] = 'No User';
+      }
+
       if(empty($data['name_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])) {
-        die('Success');
+        $loggedInUser = $this->userModel->login($data['email'], $data['password']);
+        if($loggedInUser) {
+          die('Success');
+        } else {
+          $data['password_err'] = 'Password is not correct';
+          $this->view('users/login', $data);
+        }
       } else {
         $this->view('users/login', $data);
       }

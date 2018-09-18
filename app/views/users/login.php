@@ -3,6 +3,7 @@
 <div class="col-md-6 mx-auto">
   <div class="card bg-light">
     <div class="card-body">
+      <?php flash('register_success'); ?>
       <h2 class="card-title text-center">Login</h2>
       <p>Please fill out this form to login with us</p>
       <form action="<?php echo URLROOT; ?>/users/login" method="post">
